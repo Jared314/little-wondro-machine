@@ -4,7 +4,7 @@
             [backtype.storm.clojure :as storm]
             [clojure.string :as string]
             [plumbing.fnk.pfnk :as pfnk])
-  (:import [backtype.storm.topology IBasicBolt BasicOutputCollector]
+  (:import [backtype.storm.topology IBasicBolt BasicOutputCollector OutputFieldsDeclarer]
            [backtype.storm.task TopologyContext]
            [backtype.storm.tuple Tuple]
            [java.util Map]))
@@ -17,7 +17,7 @@
         (letfn [(map->hmap [data] (reduce #(let [[a b] %2 n (keyword a)]
                                              (assoc-in %1 (remove nil? [(keyword (namespace n)) (keyword (name n))]) {} b)) data))
                 (nsmap [ns data] (reduce #(assoc %1 (str ns "/" (name (first %2))) (second %2)) {} data))]
-          (let [input (.getMap tuple)
+          (let [input tuple
                 data (select-keys (map->hmap input) input-ns)
                 result (body data)
                 mapresult (if (and (map? result) (not (nil? result))) (nsmap node-name result) {node-name result})]
@@ -39,7 +39,9 @@
        (^void prepare [this ^Map stormConf ^TopologyContext context] nil)
        (^void execute [this ^Tuple input ^BasicOutputCollector collector]
               (bolt input collector))
-       (^void cleanup [this] nil)))))
+       (^void cleanup [this] nil)
+       (^void declareOutputFields [this ^OutputFieldsDeclarer declarer] nil)
+       (^Map getComponentConfiguration [this] nil)))))
 
 ;Current Limitations:
 ;  Compiles the graph nodes into a linear graph of bolts, sorted by dependency
