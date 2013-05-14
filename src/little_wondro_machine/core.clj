@@ -1,8 +1,6 @@
 (ns little-wondro-machine.core
   (:require [plumbing.graph :as graph]
-            [plumbing.core :as graphcore]
             [backtype.storm.clojure :as storm]
-            [clojure.string :as string]
             [plumbing.fnk.pfnk :as pfnk])
   (:import [backtype.storm.topology IBasicBolt BasicOutputCollector OutputFieldsDeclarer]
            [backtype.storm.task TopologyContext]
