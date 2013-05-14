@@ -70,3 +70,13 @@
         (is (ms= testresult
                  (read-tuples results "filtering")))))))
 
+(deftest graph-topology-bolt-filters-spam-messages
+;  (with-quiet-logs
+    (with-simulated-time-local-cluster [cluster :supervisors 1]
+      (let [topology (compile-graph-topology)
+            results (complete-topology cluster
+                                       topology
+                                       :mock-sources {"messages" testdata}
+                                       :storm-conf {storm-config/TOPOLOGY-DEBUG true})]
+        (is (ms= testresult
+                 (read-tuples results "filtering"))))));)
